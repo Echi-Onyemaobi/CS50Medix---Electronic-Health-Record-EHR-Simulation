@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+  <h2>Register</h2>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for m in messages %}
+          <li>{{ m }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form action="{{ url_for('auth_bp.register') }}" method="post">
+    <div>
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" required>
+    </div>
+
+    <div>
+      <label for="role">Role</label>
+      <select id="role" name="role" required>
+        <option value="" disabled selected>Select role</option>
+        <option value="doctor">Doctor</option>
+        <option value="nurse">Nurse</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required>
+    </div>
+
+    <div>
+      <label for="confirmation">Confirm Password</label>
+      <input id="confirmation" name="confirmation" type="password" required>
+    </div>
+
+    <button type="submit">Register</button>
+  </form>
+
+  <p>Already registered?
+    <a href="{{ url_for('auth_bp.login') }}">Go to Login</a>
+  </p>
+{% endblock %}

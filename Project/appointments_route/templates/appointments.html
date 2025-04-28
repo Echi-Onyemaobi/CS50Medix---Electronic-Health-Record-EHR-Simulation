@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}Upcoming Appointments - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Upcoming Appointments</h2>
+
+<!-- list of upcoming appointments -->
+{% if appointments %}
+  <ul style="list-style-type: none; padding: 0;">
+    {% for appt in appointments %}
+    <li class="appointment-item" style="border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-bottom: 10px; background: #f9f9f9;">
+      <div>
+        <strong>{{ appt.date_time.strftime("%b %-d, %Y at %-I:%M %p") }}</strong><br>
+        <strong>Patient:</strong> {{ appt.patient_name }}<br>
+        <strong>Doctor:</strong> {{ appt.doctor_name }}<br>
+        <strong>Reason:</strong> {{ appt.reason }}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No upcoming appointments.</p>
+{% endif %}
+
+<div style="margin-top: 20px;">
+  <a href="{{ url_for('appointments_bp.add_appointment') }}" class="btn"> Add Appointment</a>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block title %}Lab Results - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Results for Order #{{ lab_order_id }}</h2>
+
+<canvas id="trendChart" style="margin-bottom: 20px;"></canvas>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Test</th>
+      <th>Value</th>
+      <th>Ref Range</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in results %}
+    <tr {% if r.critical_flag %}class="table-danger"{% endif %}>
+      <td>{{ r.test_name }}</td>
+      <td>{{ r.value }} {{ r.units or "" }}</td>
+      <td>{{ r.reference_low }}–{{ r.reference_high }}</td>
+      <td>{{ r.result_date }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div style="margin-top: 20px;">
+  <a href="{{ url_for('labs_bp.add_lab_order', patient_id=patient_id) }}" class="btn">➕ Add Lab Order</a>
+  <a href="{{ url_for('labs_bp.add_lab_result', lab_order_id=lab_order_id) }}" class="btn">➕ Add Lab Result</a>
+  <a href="{{ url_for('labs_bp.lab_orders', patient_id=patient_id) }}" class="btn">📄 View Lab Orders</a>
+</div>
+
+<!-- JavaScript Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('trendChart').getContext('2d');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    datasets: [
+      {% if trend_data %}
+        {% for test, points in trend_data.items() %}
+          {
+            label: "{{ test }}",
+            data: {{ points|tojson }},
+            fill: false,
+            tension: 0.1
+          },
+        {% endfor %}
+      {% endif %}
+    ]
+  },
+  options: {
+    parsing: { xAxisKey: 'x', yAxisKey: 'y' },
+    scales: {
+      x: {
+        type: 'time',
+        time: { unit: 'day' },
+        title: { display: true, text: 'Date' }
+      },
+      y: {
+        title: { display: true, text: 'Result' }
+      }
+    }
+  }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}Edit History Entry{% endblock %}
+
+{% block content %}
+<h2>Edit Medical History</h2>
+
+<form method="POST">
+  <div>
+    <label for="condition_name">Condition/Procedure Name:</label>
+    <input type="text" name="condition_name" id="condition_name" value="{{ history.condition_name }}" required>
+  </div>
+
+  <div>
+    <label for="status">Status:</label>
+    <select name="status" id="status" required>
+      <option value="Ongoing" {% if history.status == "Ongoing" %}selected{% endif %}>Ongoing</option>
+      <option value="Resolved" {% if history.status == "Resolved" %}selected{% endif %}>Resolved</option>
+      <option value="Post-Surgical" {% if history.status == "Post-Surgical" %}selected{% endif %}>Post-Surgical</option>
+      <option value="Chronic" {% if history.status == "Chronic" %}selected{% endif %}>Chronic</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="diagnosis_date">Date Diagnosed/Performed:</label>
+    <input type="date" name="diagnosis_date" id="diagnosis_date" value="{{ history.diagnosis_date }}">
+  </div>
+
+  <div>
+    <label for="notes">Notes:</label>
+    <textarea name="notes" id="notes" rows="3">{{ history.notes }}</textarea>
+  </div>
+
+  <button type="submit">Update</button>
+</form>
+{% endblock %}

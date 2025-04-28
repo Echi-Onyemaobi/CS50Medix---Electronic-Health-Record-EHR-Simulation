@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}Add Medical History{% endblock %}
+
+{% block content %}
+<h2>Add Medical History for Patient {{ patient_id }}</h2>
+
+<form method="POST" autocomplete="off">
+  <div>
+    <label for="condition_name">Condition/Procedure Name:</label>
+    <input type="text" name="condition_name" id="condition_name" required>
+  </div>
+
+  <div>
+    <label for="status">Status:</label>
+    <select name="status" id="status" required>
+      <option value="Ongoing">Ongoing</option>
+      <option value="Resolved">Resolved</option>
+      <option value="Post-Surgical">Post-Surgical</option>
+      <option value="Chronic">Chronic</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="diagnosis_date">Date Diagnosed/Performed:</label>
+    <input type="date" name="diagnosis_date" id="diagnosis_date">
+  </div>
+
+  <div>
+    <label for="notes">Additional Notes:</label>
+    <textarea name="notes" id="notes" rows="3"></textarea>
+  </div>
+
+  <button type="submit">Save Entry</button>
+</form>
+{% endblock %}

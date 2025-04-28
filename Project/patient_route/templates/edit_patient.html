@@ -1,0 +1,168 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Patient - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Edit Patient</h2>
+
+<form action="{{ url_for('patients_bp.edit_patient', patient_id=patient.patient_id) }}" method="POST" class="form-sections">
+  <!-- Essential Patient Information -->
+  <fieldset>
+    <legend>Basic Information</legend>
+
+    <div>
+      <label for="first_name">First Name <span class="required">*</span></label>
+      <input type="text" name="first_name" id="first_name" value="{{ patient.first_name }}" required>
+    </div>
+
+    <div>
+      <label for="last_name">Last Name <span class="required">*</span></label>
+      <input type="text" name="last_name" id="last_name" value="{{ patient.last_name }}" required>
+    </div>
+
+    <div>
+      <label>Date of Birth <span class="required">*</span></label>
+      <div class="dob-selects">
+        <select name="dob_day" required>
+          <option value="">Day</option>
+          {% for day in range(1, 32) %}
+            <option value="{{ day }}" {% if patient.date_of_birth and patient.date_of_birth[8:10]|int == day %}selected{% endif %}>{{ day }}</option>
+          {% endfor %}
+        </select>
+
+        <select name="dob_month" required>
+          <option value="">Month</option>
+          {% for month in range(1, 13) %}
+            <option value="{{ month }}" {% if patient.date_of_birth and patient.date_of_birth[5:7]|int == month %}selected{% endif %}>{{ month }}</option>
+          {% endfor %}
+        </select>
+
+        <select name="dob_year" required>
+          <option value="">Year</option>
+          {% for year in range(1900, 2026) %}
+            <option value="{{ year }}" {% if patient.date_of_birth and patient.date_of_birth[0:4]|int == year %}selected{% endif %}>{{ year }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label for="gender">Gender <span class="required">*</span></label>
+      <select name="gender" id="gender" required>
+        <option value="">--Select--</option>
+        <option value="Male" {% if patient.gender == "Male" %}selected{% endif %}>Male</option>
+        <option value="Female" {% if patient.gender == "Female" %}selected{% endif %}>Female</option>
+        <option value="Other" {% if patient.gender == "Other" %}selected{% endif %}>Other</option>
+      </select>
+    </div>
+  </fieldset>
+
+  <!-- Optional Patient Information -->
+  <fieldset>
+    <legend>Contact & Clinical Info</legend>
+
+    <div>
+      <label for="phone_number">Phone Number</label>
+      <input type="tel" name="phone_number" id="phone_number" value="{{ patient.phone_number }}">
+    </div>
+
+    <div>
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" value="{{ patient.email }}">
+    </div>
+
+    <div>
+      <label for="address">Address</label>
+      <textarea name="address" id="address">{{ patient.address }}</textarea>
+    </div>
+
+    <div>
+      <label for="blood_type">Blood Type</label>
+      <input type="text" name="blood_type" id="blood_type" value="{{ patient.blood_type }}">
+    </div>
+
+    <div>
+      <label for="emergency_contact_name">Emergency Contact Name</label>
+      <input type="text" name="emergency_contact_name" id="emergency_contact_name" value="{{ patient.emergency_contact_name }}">
+    </div>
+
+    <div>
+      <label for="emergency_contact_phone">Emergency Contact Phone</label>
+      <input type="tel" name="emergency_contact_phone" id="emergency_contact_phone" value="{{ patient.emergency_contact_phone }}">
+    </div>
+
+    <div>
+      <label for="insurance_provider">Insurance Provider</label>
+      <input type="text" name="insurance_provider" id="insurance_provider" value="{{ patient.insurance_provider }}">
+    </div>
+
+    <div>
+      <label for="insurance_number">Insurance Number</label>
+      <input type="text" name="insurance_number" id="insurance_number" value="{{ patient.insurance_number }}">
+    </div>
+
+    <div>
+      <label for="notes">Notes</label>
+      <textarea name="notes" id="notes">{{ patient.notes }}</textarea>
+    </div>
+  </fieldset>
+
+  <div>
+    <button type="submit">Save Changes</button>
+    <a href="{{ url_for('patients_bp.patient_profile', patient_id=patient.patient_id) }}" class="btn-link">Cancel</a>
+  </div>
+</form>
+
+<style>
+.form-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  max-width: 700px;
+}
+form fieldset {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 6px;
+}
+form legend {
+  font-weight: bold;
+}
+form div {
+  display: flex;
+  flex-direction: column;
+}
+form label {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+form input, form select, form textarea {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+form button {
+  padding: 10px;
+  font-weight: bold;
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+form button:hover {
+  background: #1565c0;
+}
+.btn-link {
+  margin-left: 1rem;
+  text-decoration: underline;
+  color: #444;
+}
+.required {
+  color: red;
+}
+.dob-selects {
+  display: flex;
+  gap: 5px;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+
+{% block title %}Room Assignments - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Room Assignments</h2>
+
+<div class="card" style="padding: 20px; background: #f9f9f9; border-radius: 8px; margin-bottom: 30px;">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Room #</th>
+        <th>Department</th>
+        <th>Patient Assigned</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for room in rooms %}
+      <tr>
+        <td>{{ room.room_number }}</td>
+        <td>{{ room.department_name }}</td>
+        <td>{{ room.patient_name or "—" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h3>Assign Patient to Room</h3>
+
+<form method="POST" action="{{ url_for('locations_bp.assign_room', patient_id='dummy') }}" class="card"
+      style="padding: 20px; background: #f1f8e9; border-radius: 8px; margin-top: 20px;">
+  <div style="margin-bottom: 15px;">
+    <label for="patient_id">Patient ID:</label><br>
+    <input type="text" name="patient_id" id="patient_id" required class="form-control">
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <label for="room_number">Room Number:</label><br>
+    <input type="text" name="room_number" id="room_number" required class="form-control">
+  </div>
+
+  <div>
+    <label for="department_name">Department:</label><br>
+    <input type="text" id="searchDepartment" placeholder="Search department..." class="form-control">
+    <select name="department_name" id="department_name" required class="form-control" size="5" style="margin-top: 5px;">
+      {% for dept in departments %}
+        <option value="{{ dept.department_name }}">{{ dept.department_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+<!-- Search Filter Script -->
+  <script>
+  document.getElementById('searchDepartment').addEventListener('input', function () {
+    const filter = this.value.toLowerCase();
+    const options = document.getElementById('department_name').options;
+
+    for (let i = 0; i < options.length; i++) {
+      const text = options[i].text.toLowerCase();
+      options[i].style.display = text.includes(filter) ? '' : 'none';
+    }
+  });
+  </script>
+
+  <button type="submit" class="btn">Assign Patient</button>
+</form>
+
+{% endblock %}

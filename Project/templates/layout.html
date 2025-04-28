@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}CS50Medix{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  {% block styles %}{% endblock %}
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header>
+    <h1>CS50Medix EHR</h1>
+    <nav>
+      <ul class="main-nav">
+        <li><a href="{{ url_for('dashboard_bp.dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('patients_bp.patients') }}">Patients</a></li>
+        <li><a href="{{ url_for('appointments_bp.appointments') }}">Appointments</a></li>
+        <li><a href="{{ url_for('medications_bp.medication_dictionary') }}">Medications</a></li>
+        <li><a href="{{ url_for('media_bp.upload_media') }}">Media</a></li>
+        <li><a href="{{ url_for('locations_bp.rooms') }}">Rooms</a></li>
+        <li><a href="{{ url_for('locations_bp.departments') }}">Departments</a></li>
+        <li><a href="{{ url_for('auth_bp.logout') }}">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Flash Messaging -->
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="flash {{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Page Content -->
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 CS50Medix - A Simulated Healthcare EHR</p>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

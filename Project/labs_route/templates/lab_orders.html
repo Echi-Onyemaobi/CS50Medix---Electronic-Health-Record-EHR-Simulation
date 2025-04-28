@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block title %}Lab Orders - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Lab Orders</h2>
+
+<div style="margin-bottom: 20px;">
+  <a href="{{ url_for('labs_bp.add_lab_order', patient_id=patient_id) }}" class="btn">Add New Lab Order</a>
+
+</div>
+
+{% if orders %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Type</th>
+      <th>Name</th>
+      <th>Notes</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td>{{ o.order_date }}</td>
+      <td>{{ o.order_type }}</td>
+      <td>{{ o.order_name }}</td>
+      <td>{{ o.notes or "-" }}</td>
+      <td>
+        <td>
+          <a href="{{ url_for('labs_bp.add_lab_result', lab_order_id=o.lab_order_id, patient_id=o.patient_id) }}" class="btn btn-sm">Add Result</a>
+          <a href="{{ url_for('labs_bp.lab_results', lab_order_id=o.lab_order_id, patient_id=o.patient_id) }}" class="btn btn-sm">View Results</a>
+        </td>
+
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p>No lab orders available.</p>
+{% endif %}
+{% endblock %}
+
+<!-- CSS Style -->
+<style>
+  .btn-small {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #003366;
+    padding: 8px 12px;
+    margin: 5px 0;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s background;
+  }
+  .btn-small:hover {
+    background: #bbdefb;
+  }
+  </style>

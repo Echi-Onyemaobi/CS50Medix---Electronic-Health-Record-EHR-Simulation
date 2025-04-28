@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+{% block title %}Add Vitals - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Record Patient Vitals</h2>
+
+<form action="{{ url_for('vitals_bp.add_vitals', patient_id=patient_id) }}" method="POST">
+
+  <div>
+    <label for="temperature">Temperature</label>
+    <input type="number" step="0.1" id="temperature" name="temperature" required>
+    <select id="temp_unit" name="temp_unit">
+      <option value="C">°C</option>
+      <option value="F">°F</option>
+    </select>
+    <button type="button" onclick="convertTemp()">Convert</button>
+  </div>
+
+  <div>
+    <label for="heart_rate">Heart Rate (bpm)</label>
+    <input type="number" id="heart_rate" name="heart_rate" required>
+  </div>
+
+  <div>
+    <label for="respiratory_rate">Respiratory Rate (breaths/min)</label>
+    <input type="number" id="rr" name="respiratory_rate" required>
+    <small id="rr_flag" style="display:none; color:red;"> High respiratory rate</small>
+  </div>
+
+  <div>
+    <label for="blood_pressure_systolic">Systolic BP (mmHg)</label>
+    <input type="number" id="sbp" name="blood_pressure_systolic" required>
+  </div>
+
+  <div>
+    <label for="blood_pressure_diastolic">Diastolic BP (mmHg)</label>
+    <input type="number" id="dbp" name="blood_pressure_diastolic" required>
+  </div>
+
+  <div>
+    <label for="map_value">Mean Arterial Pressure (calculated)</label>
+    <input type="number" id="map_value" name="map" readonly>
+    <small id="map_display"></small>
+    <small id="map_flag" style="display:none; color:red;"> MAP abnormal</small>
+  </div>
+
+  <div>
+    <label for="oxygen_saturation">Oxygen Saturation (SpO₂ %)</label>
+    <input type="number" id="spo2" name="oxygen_saturation" required>
+    <small id="spo2_flag" style="display:none; color:red;"> Low SpO₂</small>
+  </div>
+
+  <div>
+    <label for="pain_level">Pain Level (0-10)</label>
+    <input type="number" id="pain_level" name="pain_level" min="0" max="10">
+  </div>
+
+  <div>
+    <label for="oxygen_method">Oxygen Delivery Method</label>
+    <input type="text" id="oxygen_method" name="oxygen_method" placeholder="e.g., Nasal Cannula, Mask">
+  </div>
+
+  <div>
+    <label for="oxygen_flow_rate">Oxygen Flow Rate (L/min)</label>
+    <input type="number" step="0.1" id="oxygen_flow_rate" name="oxygen_flow_rate">
+  </div>
+
+  <div>
+    <label for="blood_sugar">Blood Sugar (mg/dL)</label>
+    <input type="number" id="blood_sugar" name="blood_sugar">
+  </div>
+
+  <div>
+    <label for="pain_description">Pain Description</label>
+    <textarea id="pain_description" name="pain_description"></textarea>
+  </div>
+
+  <div>
+    <label for="notes">Additional Notes</label>
+    <textarea id="notes" name="notes"></textarea>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <button type="submit" class="btn">Submit Vitals</button>
+  </div>
+</form>
+
+<script>
+function convertTemp() {
+  const input = document.getElementById('temperature');
+  const unit = document.getElementById('temp_unit');
+  let temp = parseFloat(input.value);
+  if (!isNaN(temp)) {
+    if (unit.value === 'F') {
+      input.value = ((temp - 32) * 5/9).toFixed(1);
+      unit.value = 'C';
+    } else {
+      input.value = ((temp * 9/5) + 32).toFixed(1);
+      unit.value = 'F';
+    }
+  }
+}
+
+document.addEventListener('input', function () {
+  const rr = document.getElementById('rr').value;
+  const sbp = parseFloat(document.getElementById('sbp').value);
+  const dbp = parseFloat(document.getElementById('dbp').value);
+  const spo2 = document.getElementById('spo2').value;
+
+  document.getElementById('rr_flag').style.display = rr > 20 ? 'block' : 'none';
+
+  if (!isNaN(sbp) && !isNaN(dbp)) {
+    const map = (sbp + 2 * dbp) / 3;
+    document.getElementById('map_value').value = map.toFixed(1);
+    document.getElementById('map_display').textContent = `MAP: ${map.toFixed(1)} mmHg`;
+    document.getElementById('map_flag').style.display =
+      map < 65 || map > 100 ? 'block' : 'none';
+    document.getElementById('bp_flag').style.display =
+      sbp > 120 || sbp < 80 || dbp > 80 || dbp < 50 ? 'block' : 'none';
+  }
+
+  document.getElementById('spo2_flag').style.display = parseInt(spo2) < 90 ? 'block' : 'none';
+});
+</script>
+{% endblock %}

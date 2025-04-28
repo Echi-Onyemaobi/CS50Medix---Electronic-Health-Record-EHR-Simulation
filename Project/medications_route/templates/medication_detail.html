@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}Medication Detail{% endblock %}
+
+{% block content %}
+<h2>{{ medication['name'] }}</h2>
+
+<p><strong>RXCUI:</strong> {{ medication['rxcui'] }}</p>
+
+{% if medication['dosage_form'] %}
+<p><strong>Dosage Form:</strong> {{ medication['dosage_form'] }}</p>
+{% endif %}
+
+{% if medication['strength'] %}
+<p><strong>Strength:</strong> {{ medication['strength'] }}</p>
+{% endif %}
+
+{% if medication['brand_name'] %}
+<p><strong>Brand Name:</strong> {{ medication['brand_name'] }}</p>
+{% endif %}
+
+<a href="{{ url_for('medications_bp.medication_dictionary') }}">← Back to Medication Dictionary</a>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block title %}Upload Media{% endblock %}
+
+{% block content %}
+<h2>Upload Media</h2>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<form action="{{ url_for('media_bp.upload_media') }}" method="post" enctype="multipart/form-data" autocomplete="off">
+  <div>
+    <label for="patient_id">Patient ID</label>
+    <input id="patient_id" name="patient_id" type="text" required>
+  </div>
+
+  <div>
+    <label for="media_type">Media Type</label>
+    <select id="media_type" name="media_type" required>
+      <option value="" disabled selected>Select media type</option>
+      <option value="woundcare">Wound Care</option>
+      <option value="xray">X-ray</option>
+      <option value="ct_scan">CT Scan</option>
+      <option value="mri">MRI</option>
+      <option value="ultrasound">Ultrasound</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="other_media_type">If Other, please specify</label>
+    <input id="other_media_type" name="other_media_type" type="text" placeholder="Describe other media type">
+  </div>
+
+  <div>
+    <label for="caption">Caption / Notes</label>
+    <textarea id="caption" name="caption" rows="3" placeholder="Optional description"></textarea>
+  </div>
+
+  <div>
+    <label for="file">Choose File</label>
+    <input id="file" name="file" type="file" required>
+  </div>
+
+  <button type="submit">Upload</button>
+</form>
+
+{% if request.form.patient_id %}
+  <p><a href="{{ url_for('media_bp.view_media', patient_id=request.form.patient_id) }}">← View Media Library</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block title %}Add Medication{% endblock %}
+
+{% block content %}
+<h2>Add Medication for Patient {{ patient_id }}</h2>
+
+<form method="POST" class="medication-form" autocomplete="off">
+  <div>
+    <label for="medication_name">Medication Name<span class="required">*</span>:</label>
+    <input type="text" name="medication_name" id="medication_name" required>
+  </div>
+
+  <div>
+    <label for="dosage">Dosage<span class="required">*</span>:</label>
+    <input type="text" name="dosage" id="dosage" required>
+  </div>
+
+  <div>
+    <label for="route">Route:</label>
+    <input type="text" name="route" id="route" placeholder="e.g. Oral, IV">
+  </div>
+
+  <div>
+    <label for="frequency">Frequency:</label>
+    <input type="text" name="frequency" id="frequency" placeholder="e.g. 2x/day">
+  </div>
+
+  <div>
+    <label for="start_date">Start Date:</label>
+    <input type="date" name="start_date" id="start_date">
+  </div>
+
+  <div>
+    <label for="end_date">End Date:</label>
+    <input type="date" name="end_date" id="end_date">
+  </div>
+
+  <div>
+    <label for="status">Status:</label>
+    <select name="status" id="status">
+      <option value="Active" selected>Active</option>
+      <option value="Discontinued">Discontinued</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="type">Type:</label>
+    <select name="type" id="type">
+      <option value="hospital" selected>Hospital</option>
+      <option value="home">Home</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="notes">Notes:</label>
+    <textarea name="notes" id="notes" placeholder="Additional info or special instructions"></textarea>
+  </div>
+
+  <div>
+    <button type="submit">Add Medication</button>
+  </div>
+</form>
+
+<!-- CSS Style -->
+<style>
+.medication-form {
+  display: grid;
+  gap: 12px;
+  max-width: 600px;
+}
+.medication-form div {
+  display: flex;
+  flex-direction: column;
+}
+.medication-form label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.medication-form input,
+.medication-form select,
+.medication-form textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.medication-form button {
+  padding: 10px;
+  font-weight: bold;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.medication-form button:hover {
+  background: #45a049;
+}
+.required {
+  color: red;
+}
+</style>
+{% endblock %}

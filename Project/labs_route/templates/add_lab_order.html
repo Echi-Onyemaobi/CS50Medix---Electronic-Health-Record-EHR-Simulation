@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Lab Order - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Add Lab Order</h2>
+
+<form action="{{ url_for('labs_bp.add_lab_order', patient_id=patient_id) }}" method="POST" autocomplete="off">
+  <div>
+    <label for="order_type">Order Type:</label>
+    <input type="text" name="order_type" id="order_type" required>
+  </div>
+
+  <div>
+    <label for="order_name">Order Name:</label>
+    <input type="text" name="order_name" id="order_name" required>
+  </div>
+
+  <div>
+    <label for="notes">Notes:</label>
+    <textarea name="notes" id="notes" rows="3"></textarea>
+  </div>
+
+  <button type="submit">Submit Order</button>
+</form>
+{% endblock %}

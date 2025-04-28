@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+
+{% block title %}Patient Profile - {{ patient.first_name }} {{ patient.last_name }}{% endblock %}
+
+{% block content %}
+<div class="patient-profile">
+  <h2>Patient Profile: {{ patient.first_name }} {{ patient.last_name }}</h2>
+
+  <!-- Alerts if present -->
+  {% if vitals.flags %}
+  <div class="alerts">
+    <h4>Clinical Warnings</h4>
+    <ul>
+      {% for flag, triggered in vitals.flags|fromjson.items() if triggered %}
+        <li>{{ flag|capitalize }} value outside expected range</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- Tab Navigation -->
+  <div class="tabs">
+    <a href="#summary" class="tab-button" onclick="showTab('summary')">Summary</a>
+    <a href="{{ url_for('vitals_bp.vitals_table', patient_id=patient.patient_id) }}" class="tab-button">Vitals</a>
+    <a href="{{ url_for('labs_bp.lab_orders', patient_id=patient.patient_id) }}" class="tab-button">Labs</a>
+    <a href="{{ url_for('appointments_bp.add_appointment') }}" class="tab-button">Appointments</a>
+    <a href="{{ url_for('medications_bp.add_medication', patient_id=patient.patient_id) }}" class="tab-button">Medications</a>
+    <a href="{{ url_for('media_bp.upload_media', patient_id=patient.patient_id) }}" class="tab-button">Media</a>
+    <a href="{{ url_for('history_bp.add_history', patient_id=patient.patient_id) }}" class="tab-button">History</a>
+  </div>
+
+
+  <!-- Summary -->
+  <div id="summary" class="tab-content active">
+    <h3>Quick Overview</h3>
+
+    <p><strong>Patient ID:</strong> {{ patient.patient_id }}</p>
+    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+    <p><strong>DOB:</strong> {{ patient.date_of_birth }}</p>
+
+    <p>
+      <strong>Room:</strong>
+      {% if room %}
+        {{ room.room_number }}
+      {% else %}
+        Not Assigned
+        <a href="{{ url_for('locations_bp.assign_room', patient_id=patient.patient_id) }}">(Assign)</a>
+      {% endif %}
+    </p>
+
+    <p>
+      <strong>Department:</strong>
+      {% if room %}
+        {{ room.department_name }}
+      {% else %}
+        Not Assigned
+      {% endif %}
+    </p>
+
+    <p><strong>Contact:</strong> {{ patient.phone_number }} | {{ patient.email }}</p>
+    <p><strong>Emergency Contact:</strong> {{ patient.emergency_contact_name }} - {{ patient.emergency_contact_phone }}</p>
+    <p><strong>Insurance:</strong> {{ patient.insurance_provider }} ({{ patient.insurance_number }})</p>
+  </div>
+
+
+</div>
+
+<!-- Switching Script -->
+<script>
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+}
+</script>
+
+
+<!-- CSS Style -->
+<style>
+  .tab-button {
+    background: #e3f2fd;
+    border: none;
+    padding: 10px 14px;
+    margin: 5px 5px 0 0;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #003366;
+    display: inline-block;
+    transition: 0.3s, color 0.3s;
+  }
+
+  .tab-button:hover {
+    background: #bbdefb;
+  }
+
+
+  .tab-content {
+    display: none;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+
+  .alerts {
+    background-color: #ffebee;
+    color: #b71c1c;
+    border-left: 6px solid #d32f2f;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+  }
+  </style>
+
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block title %}Patient Profile - CS50Medix{% endblock %}
+
+{% block content %}
+<!-- Patient Overview -->
+<section class="patient-details">
+  <h2>Patient Information</h2>
+  <p><strong>ID:</strong> {{ patient.patient_id }}</p>
+  <p><strong>Name:</strong> {{ patient.first_name }} {{ patient.last_name }}</p>
+  <p><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</p>
+  <p><strong>Gender:</strong> {{ patient.gender }}</p>
+  <p><strong>Contact:</strong> {{ patient.phone_number }} | {{ patient.email }}</p>
+  <p><strong>Address:</strong> {{ patient.address }}</p>
+</section>
+
+<!-- Vitals -->
+<section class="vitals-history">
+  <h2>🩺 Vitals History</h2>
+  <p>
+    <a href="{{ url_for('vitals_bp.view_vitals_table', patient_id=patient.patient_id) }}">View Table</a> |
+    <a href="{{ url_for('vitals_bp.vitals_chart', patient_id=patient.patient_id) }}">View Trend</a>
+  </p>
+</section>
+
+<!-- Lab Data -->
+<section class="labs-section">
+  <h2>Lab Orders & Results</h2>
+  {% if lab_orders %}
+    {% for order in lab_orders %}
+      <div class="lab-order">
+        <p><strong>{{ order.order_name }}</strong> ({{ order.order_date }})</p>
+        {% if lab_results[order.lab_order_id] %}
+          <ul>
+            {% for result in lab_results[order.lab_order_id] %}
+              <li>
+                {{ result.test_name }}: {{ result.value }} {{ result.units or '' }}
+                {% if result.critical_flag %}<strong style="color:red;">(CRITICAL)</strong>{% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No results yet.</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No lab orders found.</p>
+  {% endif %}
+</section>
+
+<!-- Medications -->
+<section class="medications-section">
+  <h2>Medications</h2>
+  {% if medications %}
+    <ul>
+      {% for med in medications %}
+        <li>{{ med.medication_name }} - {{ med.dosage }} ({{ med.type }})</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No medications listed.</p>
+  {% endif %}
+</section>
+
+<!-- History -->
+<section class="medical-history-section">
+  <h2>Medical History</h2>
+  {% if medical_history %}
+    <ul>
+      {% for entry in medical_history %}
+        <li>{{ entry.condition_name }} - {{ entry.status }} ({{ entry.diagnosis_date }})</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No medical history entries.</p>
+  {% endif %}
+</section>
+
+<!-- Media -->
+<section class="media-files-section">
+  <h2> Media Attachments</h2>
+  {% if media_files %}
+    <ul>
+      {% for file in media_files %}
+        <li>
+          <a href="{{ url_for('static', filename=file.file_path) }}" target="_blank">
+            {{ file.media_type|capitalize }} - {{ file.caption or "No caption" }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No media files uploaded.</p>
+  {% endif %}
+</section>
+
+<!-- Notes -->
+<section class="notes-section">
+  <h2> Clinical Notes</h2>
+  {% if notes %}
+    <ul>
+      {% for note in notes %}
+        <li>
+          <p>{{ note.note }}</p>
+          <small>{{ note.created_at }}</small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No notes found for this patient.</p>
+  {% endif %}
+  <a href="{{ url_for('patients_bp.patient_notes', patient_id=patient.patient_id) }}" class="btn">➕ Add Note</a>
+</section>
+
+<!-- CSS Style -->
+<style>
+section {
+  margin-bottom: 2rem;
+}
+.lab-order, .note {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-left: 4px solid #0077cc;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+}
+ul {
+  padding-left: 1rem;
+}
+.btn {
+  padding: 8px 12px;
+  background: #0077cc;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.btn:hover {
+  background: #005fa3;
+}
+</style>
+{% endblock %}

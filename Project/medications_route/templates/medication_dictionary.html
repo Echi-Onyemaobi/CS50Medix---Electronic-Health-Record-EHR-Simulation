@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block title %}Medication Dictionary{% endblock %}
+
+{% block content %}
+<h2>Medication Dictionary</h2>
+
+<!--Interaction Checker -->
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('interaction_bp.interaction_checker') }}">
+        <button type="button" style="padding: 10px 20px; font-size: 16px;"> Check Medication Interactions</button>
+    </a>
+</div>
+
+
+<div style="margin-bottom: 20px;">
+    <input
+        type="text"
+        id="search-box"
+        placeholder="Search for a medication..."
+        style="width: 100%; padding: 8px; font-size: 16px;"
+    >
+</div>
+
+
+{% if meds %}
+<ul id="medication-list" style="list-style-type: none; padding: 0;">
+    {% for med in meds %}
+    <li class="medication-item" style="margin-bottom: 25px; padding: 10px; border-bottom: 1px solid #ccc;">
+        <div style="font-weight: bold; font-size: 18px;">{{ med['name'] }}</div>
+        <div><strong>RXCUI:</strong> {{ med['rxcui'] }}</div>
+
+        {% if 'dosage_form' in med and med['dosage_form'] %}
+            <div><strong>Dosage Form:</strong> {{ med['dosage_form'] }}</div>
+        {% endif %}
+        {% if 'strength' in med and med['strength'] %}
+            <div><strong>Strength:</strong> {{ med['strength'] }}</div>
+        {% endif %}
+        {% if 'brand_name' in med and med['brand_name'] %}
+            <div><strong>Brand Name:</strong> {{ med['brand_name'] }}</div>
+        {% endif %}
+
+        <div style="margin-top: 10px;">
+            <a href="{{ url_for('medications_bp.view_medication_details', rxcui=med['rxcui']) }}">
+                <button type="button" style="padding: 6px 12px;">View Details</button>
+            </a>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No medications found.</p>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchBox = document.getElementById('search-box');
+    const meds = document.querySelectorAll('.medication-item');
+
+    searchBox.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        meds.forEach(function(med) {
+            const text = med.textContent.toLowerCase();
+            med.style.display = text.includes(query) ? '' : 'none';
+        });
+    });
+});
+</script>
+{% endblock %}

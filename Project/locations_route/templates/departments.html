@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}Departments - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Hospital Departments</h2>
+
+<div style="margin: 20px 0;">
+  <input type="text" id="searchBox" placeholder="Search"
+         class="form-control"
+         style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+</div>
+
+<div class="card" style="padding: 20px; background: #f9f9f9; border-radius: 8px;">
+  <table class="table" id="departmentsTable">
+    <thead>
+      <tr>
+        <th style="text-align: left;">Department Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set hardcoded_departments = [
+        'Anesthesiology', 'Cardiology', 'Emergency Department', 'Endocrinology',
+        'Family Medicine', 'Gastroenterology', 'Health Information Management / Medical Records', 'Hematology',
+        'ICU (Intensive Care Unit)', 'Internal Medicine', 'Laboratory / Pathology', 'Medical-Surgical',
+        'Neonatology', 'Nephrology', 'Neurology', 'Neurosurgery',
+        'Obstetrics and Gynecology', 'Oncology', 'Orthopedic Surgery', 'PACU',
+        'Pediatrics', 'Pharmacy', 'Psychiatry', 'Pulmonology',
+        'Radiology', 'Surgical', 'Urology', 'Wound Care'
+      ] %}
+
+      {% for dept in hardcoded_departments %}
+      <tr>
+        <td>{{ dept }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Search Filter Script -->
+<script>
+document.getElementById('searchBox').addEventListener('input', function () {
+  const filter = this.value.toLowerCase();
+  const rows = document.querySelectorAll('#departmentsTable tbody tr');
+
+  rows.forEach(row => {
+    const department = row.cells[0].textContent.toLowerCase();
+    row.style.display = department.includes(filter) ? '' : 'none';
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block title %}Patient Notes - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Notes for {{ patient.first_name }} {{ patient.last_name }}</h2>
+
+
+<section class="notes-section">
+  <h3>Existing Notes</h3>
+  {% if notes %}
+    <ul class="notes-list">
+      {% for note in notes %}
+        <li class="note-card">
+          <p>{{ note.note }}</p>
+          <small class="note-date">{{ note.created_at }}</small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No notes available for this patient.</p>
+  {% endif %}
+</section>
+
+
+<section class="new-note-section">
+  <h3> Add a New Note</h3>
+  <form action="{{ url_for('patients_bp.patient_notes', patient_id=patient.patient_id) }}" method="POST" class="note-form">
+    <label for="note">Note:</label>
+    <textarea name="note" id="note" required placeholder="Enter your note here..."></textarea>
+    <button type="submit">Add Note</button>
+  </form>
+</section>
+
+<!-- CSS Style -->
+<style>
+.notes-section, .new-note-section {
+  margin-top: 2rem;
+}
+
+.notes-list {
+  list-style: none;
+  padding: 0;
+}
+
+.note-card {
+  background: #f4f4f4;
+  border-left: 4px solid #1976d2;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+}
+
+.note-date {
+  color: #555;
+  font-size: 0.875rem;
+}
+
+.note-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-width: 600px;
+}
+
+.note-form textarea {
+  padding: 10px;
+  height: 100px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+.note-form button {
+  align-self: start;
+  background-color: #1976d2;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.note-form button:hover {
+  background-color: #1565c0;
+}
+</style>
+{% endblock %}

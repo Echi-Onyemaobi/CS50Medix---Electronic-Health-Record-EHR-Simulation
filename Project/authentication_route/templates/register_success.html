@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Registration Complete{% endblock %}
+
+{% block content %}
+  <h2>All set!</h2>
+
+  <p>Thanks for signing up, <strong>{{ session.user_id }}</strong>.</p>
+  <p>Your <strong>User ID</strong> is:</p>
+
+  <div class="user-id-box">
+    <code>{{ user_id }}</code>
+  </div>
+
+  <p>
+    You’ll need this User ID plus your password whenever you log in.
+  </p>
+
+  <p>
+    <a href="{{ url_for('auth_bp.login') }}" class="btn">Go to Login</a>
+  </p>
+{% endblock %}

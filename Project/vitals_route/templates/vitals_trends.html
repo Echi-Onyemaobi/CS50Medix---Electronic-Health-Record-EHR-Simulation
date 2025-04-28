@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}Vitals Snapshot - Patient {{ patient_id }}{% endblock %}
+
+{% block content %}
+<h2> Vitals Snapshot</h2>
+
+{% if vitals %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Temp (°C)</th>
+      <th>HR</th>
+      <th>BP</th>
+      <th>SpO₂</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for v in vitals[-5:] %}
+    <tr>
+      <td>{{ v.date_recorded }}</td>
+      <td>{{ v.temperature }}</td>
+      <td>{{ v.heart_rate }}</td>
+      <td>{{ v.blood_pressure_systolic }}/{{ v.blood_pressure_diastolic }}</td>
+      <td>{{ v.oxygen_saturation }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p><a href="{{ url_for('vitals_bp.vitals_table', patient_id=patient_id) }}">View Full History →</a></p>
+{% else %}
+  <p>No vitals available for this patient.</p>
+{% endif %}
+{% endblock %}

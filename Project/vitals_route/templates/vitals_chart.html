@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+{% block title %}Vitals Chart - Patient {{ patient_id }}{% endblock %}
+
+{% block content %}
+<h2>Vitals Trend Visualization</h2>
+
+<canvas id="vitalsChart" style="max-width: 100%; height: 400px;"></canvas>
+
+{% if vitals_data %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const data = {
+  labels: {{ vitals_data | map(attribute='time') | list | tojson }},
+  datasets: [
+    {
+      label: 'Temperature (°C)',
+      data: {{ vitals_data | map(attribute='temperature') | list | tojson }},
+      borderColor: '#f44336',
+      fill: false,
+      tension: 0.1
+    },
+    {
+      label: 'Heart Rate (bpm)',
+      data: {{ vitals_data | map(attribute='heart_rate') | list | tojson }},
+      borderColor: '#2196f3',
+      fill: false,
+      tension: 0.1
+    },
+    {
+      label: 'Systolic BP',
+      data: {{ vitals_data | map(attribute='bp_systolic') | list | tojson }},
+      borderColor: '#4caf50',
+      fill: false,
+      tension: 0.1
+    },
+    {
+      label: 'Diastolic BP',
+      data: {{ vitals_data | map(attribute='bp_diastolic') | list | tojson }},
+      borderColor: '#8bc34a',
+      fill: false,
+      tension: 0.1
+    },
+    {
+      label: 'Respiratory Rate',
+      data: {{ vitals_data | map(attribute='respiratory_rate') | list | tojson }},
+      borderColor: '#ff9800',
+      fill: false,
+      tension: 0.1
+    },
+    {
+      label: 'SpO₂ (%)',
+      data: {{ vitals_data | map(attribute='oxygen_saturation') | list | tojson }},
+      borderColor: '#9c27b0',
+      fill: false,
+      tension: 0.1
+    }
+  ]
+};
+
+new Chart(document.getElementById('vitalsChart'), {
+  type: 'line',
+  data: data,
+  options: {
+    responsive: true,
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: 'Vitals Over Time'
+      }
+    },
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          tooltipFormat: 'MMM d, yyyy HH:mm',
+          unit: 'day'
+        },
+        title: {
+          display: true,
+          text: 'Date'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Measurement'
+        }
+      }
+    }
+  }
+});
+</script>
+{% else %}
+  <p>No vitals data available to graph.</p>
+{% endif %}
+{% endblock %}
+
+
+<style>
+  .vitals-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .action-btn {
+    background-color: #1976d2;
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .action-btn:hover {
+    background-color: #1565c0;
+  }
+  </style>

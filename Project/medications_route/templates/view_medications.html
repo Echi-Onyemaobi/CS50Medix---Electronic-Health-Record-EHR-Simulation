@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block title %}Medications - {{ patient.first_name }} {{ patient.last_name }}{% endblock %}
+
+{% block content %}
+<h2>Medications for {{ patient.first_name }} {{ patient.last_name }}</h2>
+
+
+<section style="margin-top: 30px;">
+  <h3>Hospital Medications</h3>
+  {% if hospital_meds %}
+    <table class="table" style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>Medication</th>
+          <th>Dosage</th>
+          <th>Route</th>
+          <th>Frequency</th>
+          <th>Start Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for med in hospital_meds %}
+        <tr>
+          <td>{{ med.medication_name }}</td>
+          <td>{{ med.dosage }}</td>
+          <td>{{ med.route or "—" }}</td>
+          <td>{{ med.frequency or "—" }}</td>
+          <td>{{ med.start_date or "—" }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('medications_bp.discontinue_medication', patient_id=patient.patient_id, medication_id=med.medication_id) }}">
+              <button type="submit" style="padding: 5px 10px;">Discontinue</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No active hospital medications.</p>
+  {% endif %}
+</section>
+
+
+<section style="margin-top: 30px;">
+  <h3> Home Medications</h3>
+  {% if home_meds %}
+    <table class="table" style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>Medication</th>
+          <th>Dosage</th>
+          <th>Frequency</th>
+          <th>Start Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for med in home_meds %}
+        <tr>
+          <td>{{ med.medication_name }}</td>
+          <td>{{ med.dosage }}</td>
+          <td>{{ med.frequency or "—" }}</td>
+          <td>{{ med.start_date or "—" }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('medications_bp.discontinue_medication', patient_id=patient.patient_id, medication_id=med.medication_id) }}">
+              <button type="submit" style="padding: 5px 10px;">Discontinue</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No home medications listed.</p>
+  {% endif %}
+</section>
+
+
+<section style="margin-top: 30px;">
+  <h3> Discontinued Medications</h3>
+  {% if discontinued_meds %}
+    <table class="table" style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>Medication</th>
+          <th>Dosage</th>
+          <th>Route</th>
+          <th>Frequency</th>
+          <th>Start</th>
+          <th>End</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for med in discontinued_meds %}
+        <tr style="background-color: #f9f9f9;">
+          <td>{{ med.medication_name }}</td>
+          <td>{{ med.dosage }}</td>
+          <td>{{ med.route or "—" }}</td>
+          <td>{{ med.frequency or "—" }}</td>
+          <td>{{ med.start_date or "—" }}</td>
+          <td>{{ med.end_date or "—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No discontinued medications.</p>
+  {% endif %}
+</section>
+
+
+<div style="margin-top: 30px; text-align: center;">
+  <a href="{{ url_for('medications_bp.add_medication', patient_id=patient.patient_id) }}">
+    <button type="button" style="padding: 12px 24px; font-size: 16px;"> Add New Medication</button>
+  </a>
+</div>
+
+{% endblock %}

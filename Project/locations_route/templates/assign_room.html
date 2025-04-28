@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}Assign Room - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Assign Room to Patient {{ patient_id }}</h2>
+
+<form method="POST" autocomplete="off">
+
+  <div style="margin-bottom: 10px;">
+    <label for="room_number">Room Number:</label>
+    <input type="text" name="room_number" id="room_number" required class="form-control">
+  </div>
+  <div>
+    <label for="department_name">Department:</label><br>
+    <input type="text" id="searchDepartment" placeholder="Search department..." class="form-control">
+    <select name="department_name" id="department_name" required class="form-control" size="5" style="margin-top: 5px;">
+      {% for dept in departments %}
+        <option value="{{ dept.department_name }}">{{ dept.department_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn">Assign Room and Department</button>
+</form>
+
+<!-- Search Filter Script -->
+<script>
+  document.getElementById('searchDepartment').addEventListener('input', function () {
+    const filter = this.value.toLowerCase();
+    const options = document.getElementById('department_name').options;
+
+    for (let i = 0; i < options.length; i++) {
+      const text = options[i].text.toLowerCase();
+      options[i].style.display = text.includes(filter) ? '' : 'none';
+    }
+  });
+  </script>
+
+{% endblock %}

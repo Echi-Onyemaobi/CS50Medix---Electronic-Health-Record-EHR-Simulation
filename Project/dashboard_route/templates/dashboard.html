@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard - CS50Medix{% endblock %}
+
+{% block content %}
+<h2>Facility Overview</h2>
+
+<div class="dashboard-grid">
+  <div class="tile blue">
+    <h3>{{ total_patients }}</h3>
+    <p>Active Patients</p>
+  </div>
+
+  <div class="tile orange">
+    <h3>{{ pending_labs }}</h3>
+    <p>Pending Lab Results</p>
+  </div>
+
+  <div class="tile pink">
+    <h3>{{ unassigned_patients }}</h3>
+    <p>Unassigned Patients</p>
+  </div>
+</div>
+
+<h3>Upcoming Appointments</h3>
+<ul>
+  {% if upcoming_appointments %}
+    {% for appt in upcoming_appointments %}
+      <li>{{ appt.dt }} - {{ appt.patient_name }}</li>
+    {% endfor %}
+  {% else %}
+    <li>No upcoming appointments.</li>
+  {% endif %}
+</ul>
+
+<!-- Encouragement Section -->
+<div class="dashboard-encouragement">
+  <h4>Great Work Team!</h4>
+  <p>You're doing an amazing job caring for patients.</p>
+  <p>Keep it up — your dedication makes a difference!</p>
+</div>
+{% endblock %}
+
+{% block styles %}
+
+<!-- CSS Style -->
+<style>
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.tile {
+  background: #f4f4f4;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.tile.blue { background: #e3f2fd; }
+.tile.orange { background: #fff3e0; }
+.tile.pink { background: #fce4ec; }
+.dashboard-encouragement {
+  margin-top: 2rem;
+  background: #f1f8e9;
+  padding: 1rem;
+  border-left: 5px solid #689f38;
+  border-radius: 4px;
+}
+</style>
+{% endblock %}

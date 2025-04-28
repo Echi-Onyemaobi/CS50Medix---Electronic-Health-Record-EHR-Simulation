@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block title %}Patient Media Files{% endblock %}
+
+{% block content %}
+<h2>Media Files for {{ patient.first_name }} {{ patient.last_name }}</h2>
+
+{% if media_files %}
+  <div class="media-grid">
+    {% for file in media_files %}
+      <div class="media-item">
+        <p><strong>{{ file.media_type|capitalize }}</strong></p>
+
+        {% if file.media_type in ["xray", "ct_scan", "mri", "ultrasound", "woundcare"] %}
+          <img src="{{ url_for('static', filename=file.file_path) }}" alt="{{ file.caption or file.media_type }}" class="media-preview">
+        {% endif %}
+
+        <p>{{ file.caption or "No caption" }}</p>
+        <small>Uploaded: {{ file.uploaded_at }}</small>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No media files found for this patient.</p>
+{% endif %}
+
+<a href="{{ url_for('media_bp.upload_media') }}">Upload More Media</a>
+{% endblock %}
+
+{% block styles %}
+
+<!-- CSS Style -->
+<style>
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+.media-item {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  background: #f9f9f9;
+  text-align: center;
+}
+.media-preview {
+  max-width: 100%;
+  max-height: 150px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+</style>
+{% endblock %}

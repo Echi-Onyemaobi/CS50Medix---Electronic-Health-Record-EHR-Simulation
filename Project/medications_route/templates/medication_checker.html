@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+
+{% block title %}Medication Interaction Checker{% endblock %}
+
+{% block content %}
+<h2>Medication Interaction Checker</h2>
+
+<form id="interaction-form" style="margin-bottom: 20px;">
+    <div style="margin-bottom: 10px;">
+        <label for="med1">Medication 1:</label><br>
+        <input type="text" id="med1" name="med1" autocomplete="off" style="width: 100%; padding: 8px;">
+    </div>
+
+    <div style="margin-bottom: 10px;">
+        <label for="med2">Medication 2:</label><br>
+        <input type="text" id="med2" name="med2" autocomplete="off" style="width: 100%; padding: 8px;">
+    </div>
+
+    <button type="submit" style="padding: 10px 20px; font-size: 16px;">🔍 Check Interactions</button>
+</form>
+
+<div id="interaction-result" style="margin-top: 30px; font-size: 16px;"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(function() {
+    function setupAutocomplete(inputId) {
+        $(`#${inputId}`).on('input', function() {
+            const query = $(this).val().trim();
+            if (query.length < 2) return;
+
+            $.getJSON('/autocomplete_medications', { q: query }, function(data) {
+                let datalistId = `${inputId}_datalist`;
+                let $datalist = $(`#${datalistId}`);
+                if (!$datalist.length) {
+                    $datalist = $('<datalist>').attr('id', datalistId);
+                    $(`#${inputId}`).attr('list', datalistId).after($datalist);
+                }
+                $datalist.empty();
+                data.forEach(function(item) {
+                    $datalist.append(`<option value="${item.name}">`);
+                });
+            });
+        });
+    }
+
+    setupAutocomplete('med1');
+    setupAutocomplete('med2');
+
+    $('#interaction-form').on('submit', function(e) {
+        e.preventDefault();
+        const med1 = $('#med1').val().trim();
+        const med2 = $('#med2').val().trim();
+
+        if (!med1 || !med2) {
+            $('#interaction-result').html('<p style="color: red;">Please select two medications to compare.</p>');
+            return;
+        }
+
+        $('#interaction-result').html('<p>🔎 Checking for interactions...</p>');
+
+        $.ajax({
+            url: '/check_interactions',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ med1: med1, med2: med2 }),
+            success: function(response) {
+                let html = "";
+
+                // Show Interactions
+                if (response.interactions && response.interactions.length > 0) {
+                    html += '<h3>Potential Interactions:</h3><ul>';
+                    response.interactions.forEach(function(interaction) {
+                        let severity = (interaction.severity || "unknown").toLowerCase();
+                        let color = "gray";
+
+                        if (severity.includes("high") || severity.includes("severe")) {
+                            color = "red";
+                        } else if (severity.includes("moderate")) {
+                            color = "orange";
+                        } else if (severity.includes("low") || severity.includes("minor")) {
+                            color = "green";
+                        }
+
+                        html += `
+                            <li style="margin-bottom: 10px;">
+                                <strong>Severity:</strong>
+                                <span style="color: ${color}; font-weight: bold;">${interaction.severity}</span><br>
+                                <strong>Description:</strong> ${interaction.description}
+                            </li>
+                        `;
+                    });
+                    html += '</ul>';
+                } else if (response.message) {
+                    html += `<p>${response.message}</p>`;
+                }
+
+                // Show Comparison Table
+                if (response.med1 && response.med2) {
+                    html += `
+                        <h3>Medication Comparison:</h3>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <thead>
+                                <tr style="background-color: #0055a5; color: white;">
+                                    <th>Field</th>
+                                    <th>${response.med1.name}</th>
+                                    <th>${response.med2.name}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>RXCUI</strong></td><td>${response.med1.rxcui || "—"}</td><td>${response.med2.rxcui || "—"}</td></tr>
+                                <tr><td><strong>Dosage Form</strong></td><td>${response.med1.dosage_form || "—"}</td><td>${response.med2.dosage_form || "—"}</td></tr>
+                                <tr><td><strong>Strength</strong></td><td>${response.med1.strength || "—"}</td><td>${response.med2.strength || "—"}</td></tr>
+                                <tr><td><strong>Brand Name</strong></td><td>${response.med1.brand_name || "—"}</td><td>${response.med2.brand_name || "—"}</td></tr>
+                            </tbody>
+                        </table>
+                    `;
+                }
+
+                $('#interaction-result').html(html);
+            },
+            error: function(xhr) {
+                $('#interaction-result').html(`<p style="color: red;">Error: ${xhr.responseJSON?.error || 'An unexpected error occurred.'}</p>`);
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
