@@ -1,3 +1,5 @@
+Name: Echi Onyemaobi
+
 CS50Medix - Electronic Health Record (EHR) Simulation
 
 
