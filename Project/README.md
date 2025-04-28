@@ -1,11 +1,4 @@
 Name: Echi Onyemaobi
-GitHub username: Echi-Onyemaobi
-EDX username: Echi_66
-Odessa, TX, USA
-Date: 4/28/2025
-email: onyemaobiechioma@gmail.com
-
-Youtube link: https://youtu.be/wL0JrP7EolY
 
 CS50Medix - Electronic Health Record (EHR) Simulation
 
@@ -17,6 +10,7 @@ The system models real-world healthcare workflows, including patient management,
 Goal:
 Create a foundational EHR platform that mirrors the structure, usability, and extensibility of real hospital systems — while integrating live medical databases and smart validation tools.
 
+Youtube link: https://youtu.be/wL0JrP7EolY
 
 Technologies Used
 Backend: Flask (Python)
